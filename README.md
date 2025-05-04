@@ -31,7 +31,7 @@ As principais mudanças que fiz foram:
 
 ## Como jogar
 
-1. Abra o arquivo `index.html` no navegador.
+1. Clique o [link](https://elgennenif.github.io/pong/).
 2. Na tela inicial, leia as instruções e pressione **ENTER** para começar.
 3. Use as **setas ↑ e ↓** para mover sua barra (azul) para cima ou para baixo.
 4. Rebata a bola e tente não deixar que ela passe pela sua barra!
