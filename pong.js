@@ -4,16 +4,20 @@ let paddleHeight = 100;
 let paddleWidth = 15;
 let gameStarted = false;
 
+let mobileUpPressed = false;
+let mobileDownPressed = false;
+
 function setup() {
   createCanvas(400, 400);
   startGame();
-  noLoop(); 
+  noLoop();
+  detectMobile();
 }
 
 function startGame() {
   ball = createVector(width / 2, height / 2);
-  ball.vel = createVector(ballSpeed);
-  
+  ball.vel = createVector(ballSpeed, random(-2, 2));
+
   playerPaddle = createVector(20, height / 2 - paddleHeight / 2);
   aiPaddle = createVector(width - 35, height / 2 - paddleHeight / 2);
 }
@@ -22,18 +26,15 @@ function draw() {
   if (!gameStarted) {
     background(0);
     textAlign(CENTER, CENTER);
-
     fill(255);
     textSize(32);
     text("PONG", width / 2, height / 2 - 80);
-
     textSize(16);
-    fill(255);
     text("Você é a barra", width / 2, height / 2 - 30);
     fill(0, 0, 255);
     text("azul", width / 2, height / 2 - 10);
     fill(255);
-    text("Use as setas ↑ ↓ para se mover", width / 2, height / 2 + 10);
+    text("Use as setas ↑ ↓ ou botões para jogar", width / 2, height / 2 + 10);
     text("Pressione ENTER para começar", width / 2, height / 2 + 50);
     return;
   }
@@ -41,34 +42,35 @@ function draw() {
   background(0, 60);
 
   if (abs(ball.vel.x) > abs(ball.vel.y)) {
-    if (ball.vel.x > 0) fill(255, 0, 0); // direita → vermelho
-    else fill(0, 0, 255); // esquerda → azul
+    if (ball.vel.x > 0) fill(255, 0, 0); // IA
+    else fill(0, 0, 255); // Jogador
   }
 
   ellipse(ball.x, ball.y, 20);
   ball.add(ball.vel);
-  ball.vel.limit(15); 
+  ball.vel.limit(15);
 
   if (ball.y < 0 || ball.y > height) ball.vel.y *= -1;
 
-  // Colisão com o jogador
+  // Colisão com jogador
   if (ball.x < playerPaddle.x + paddleWidth &&
       ball.y > playerPaddle.y &&
       ball.y < playerPaddle.y + paddleHeight) {
-    ball.vel.x *= -1.05; 
-    ball.vel.y += random(-1, 1); 
+    ball.vel.x *= -1.05;
+    ball.vel.y += random(-1, 1);
     ball.x = playerPaddle.x + paddleWidth;
   }
 
-  // Colisão com a IA
+  // Colisão com IA
   if (ball.x > aiPaddle.x &&
       ball.y > aiPaddle.y &&
       ball.y < aiPaddle.y + paddleHeight) {
-    ball.vel.x *= -1.05; 
-    ball.vel.y += random(-2, 2); 
+    ball.vel.x *= -1.05;
+    ball.vel.y += random(-2, 2);
     ball.x = aiPaddle.x;
   }
 
+  // Pontuação
   if (ball.x < 0 || ball.x > width) {
     startGame();
   }
@@ -76,8 +78,8 @@ function draw() {
   // Jogador
   fill(0, 0, 255);
   rect(playerPaddle.x, playerPaddle.y, paddleWidth, paddleHeight);
-  if (keyIsDown(UP_ARROW)) playerPaddle.y -= 7;
-  if (keyIsDown(DOWN_ARROW)) playerPaddle.y += 7;
+  if (keyIsDown(UP_ARROW) || mobileUpPressed) playerPaddle.y -= 7;
+  if (keyIsDown(DOWN_ARROW) || mobileDownPressed) playerPaddle.y += 7;
 
   // IA
   fill(255, 0, 0);
@@ -88,6 +90,20 @@ function draw() {
 function keyPressed() {
   if (!gameStarted && keyCode === ENTER) {
     gameStarted = true;
-    loop(); 
+    loop();
+  }
+}
+
+function detectMobile() {
+  if (/Mobi|Android/i.test(navigator.userAgent)) {
+    document.getElementById('mobile-controls').style.display = 'flex';
+
+    const upBtn = document.getElementById('up-button');
+    const downBtn = document.getElementById('down-button');
+
+    upBtn.addEventListener('touchstart', () => mobileUpPressed = true);
+    upBtn.addEventListener('touchend', () => mobileUpPressed = false);
+    downBtn.addEventListener('touchstart', () => mobileDownPressed = true);
+    downBtn.addEventListener('touchend', () => mobileDownPressed = false);
   }
 }

@@ -1,27 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <title>Pong</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      background: rgb(75, 75, 75);
-      color: white;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    canvas {
-      display: block;
-      margin-top: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Controles móveis (aparecem só no celular) -->
+  <div id="mobile-controls">
+    <button id="up-button">↑</button>
+    <button id="down-button">↓</button>
+  </div>
+
+  <!-- Script principal do jogo -->
   <script src="pong.js"></script>
 </body>
 </html>
