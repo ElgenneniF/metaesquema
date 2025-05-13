@@ -41,12 +41,17 @@ function draw() {
 
   background(0, 60);
 
+  push(); // Salva o estado atual de desenho
+  translate(ball.x, ball.y); // Move a origem para a posição da bola
+
   if (abs(ball.vel.x) > abs(ball.vel.y)) {
     if (ball.vel.x > 0) fill(255, 0, 0); // IA
     else fill(0, 0, 255); // Jogador
   }
 
-  ellipse(ball.x, ball.y, 20);
+  ellipse(0, 0, 20); // Desenha a bola na nova origem
+  pop();
+
   ball.add(ball.vel);
   ball.vel.limit(15);
 
@@ -81,9 +86,15 @@ function draw() {
   if (keyIsDown(UP_ARROW) || mobileUpPressed) playerPaddle.y -= 7;
   if (keyIsDown(DOWN_ARROW) || mobileDownPressed) playerPaddle.y += 7;
 
+  // Limitar o movimento do jogador dentro da tela
+  playerPaddle.y = constrain(playerPaddle.y, 0, height - paddleHeight);
+
   // IA
   fill(255, 0, 0);
   aiPaddle.y += (ball.y - aiPaddle.y - paddleHeight / 2) * 0.05;
+
+  // Limitar o movimento da IA dentro da tela
+  aiPaddle.y = constrain(aiPaddle.y, 0, height - paddleHeight);
   rect(aiPaddle.x, aiPaddle.y, paddleWidth, paddleHeight);
 }
 
@@ -97,13 +108,22 @@ function keyPressed() {
 function detectMobile() {
   if (/Mobi|Android/i.test(navigator.userAgent)) {
     document.getElementById('mobile-controls').style.display = 'flex';
+    document.getElementById('mobile-start').style.display = 'flex'; // mostra o botão "Começar"
 
     const upBtn = document.getElementById('up-button');
     const downBtn = document.getElementById('down-button');
-
+    
     upBtn.addEventListener('touchstart', () => mobileUpPressed = true);
     upBtn.addEventListener('touchend', () => mobileUpPressed = false);
     downBtn.addEventListener('touchstart', () => mobileDownPressed = true);
     downBtn.addEventListener('touchend', () => mobileDownPressed = false);
+  }
+}
+
+function startMobileGame() {
+  if (!gameStarted) {
+    gameStarted = true;
+    loop();
+    document.getElementById('mobile-start').style.display = 'none';
   }
 }
